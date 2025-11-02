@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useAppDispatch } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { Button } from '../components/ui/Button';
 import { toggleTheme } from '../features/themes/themeSlice';
+import { selectUser } from '../slice/userSlice';
 
 const Wrapper = styled.div`
   text-align: center;
@@ -11,10 +12,11 @@ const Wrapper = styled.div`
 
 export const Home = () => {
   const dispatch = useAppDispatch();
-
+  const user = useAppSelector(selectUser);
+  console.info('user: ', user);
   return (
     <Wrapper>
-      <h1>Welcome to the React TS App 🚀</h1>
+      <h1>Hello {user?.username}</h1>, <h2>Welcome to the React TS App 🚀</h2>
       <p>
         This app supports dark & light themes with Redux + Styled Components.
       </p>

@@ -2,44 +2,35 @@ import React from 'react';
 import styled from 'styled-components';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
-import { useWindowWidth } from '../../hooks/useWindowWidth';
 
 interface RootLayoutProps {
   children?: React.ReactNode;
 }
 
 export const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
-  const width = useWindowWidth();
-  const showSidebar = width > 950;
-
   return (
     <GridContainer>
       <Header />
-      <MainContent $showSidebar={showSidebar}>
-        {showSidebar && <Sidebar />}
+      <MainContent>
+        <Sidebar />
         <Content>{children}</Content>
       </MainContent>
     </GridContainer>
   );
 };
 
-/* ===================== STYLES ===================== */
-
 const GridContainer = styled.div`
   display: grid;
   grid-template-rows: 5rem 1fr;
   height: 100vh;
   width: 100vw;
+  overflow: hidden;
 `;
 
-const MainContent = styled.div<{ $showSidebar: boolean }>`
+const MainContent = styled.div`
   display: grid;
-  grid-template-columns: ${({ $showSidebar }) =>
-    $showSidebar ? '15rem 1fr' : '1fr'};
-  width: 100%;
-  height: 100%;
+  grid-template-columns: auto 1fr;
   overflow: hidden;
-  transition: grid-template-columns 0.3s ease;
 `;
 
 const Content = styled.main`

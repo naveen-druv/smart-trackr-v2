@@ -1,13 +1,36 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import { Home } from '../pages/Home';
-import { About } from '../pages/About';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { Landing } from '../pages/LandingPage';
+import { RootLayout } from '../components/layout/RootLayout';
 import { NotFound } from '../pages/NotFound';
+import Home from '../pages/Home';
+import { useAppSelector } from '../app/hooks';
+import { selectUser } from '../slice/userSlice';
 
-export const AppRouter = () => (
-  <Routes>
-    <Route path='/' element={<Home />} />
-    <Route path='/about' element={<About />} />
-    <Route path='*' element={<NotFound />} />
-  </Routes>
-);
+export const AppRouter = () => {
+  const user = useAppSelector(selectUser);
+
+  return (
+    <Routes>
+      {/* Landing page */}
+      <Route path='/login' element={<Landing />} />
+
+      {/* Protected routes */}
+      <Route
+        path='/*'
+        element={
+          user ? (
+            <RootLayout>
+              <Routes>
+                <Route path='/' element={<Home />} />
+                <Route path='*' element={<NotFound />} />
+              </Routes>
+            </RootLayout>
+          ) : (
+            <Navigate to='/login' />
+          )
+        }
+      />
+    </Routes>
+  );
+};

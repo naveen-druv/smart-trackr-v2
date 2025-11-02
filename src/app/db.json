@@ -1,0 +1,22 @@
+{
+  "users": [
+    {
+      "id": "95ad",
+      "email": "naveenkeshav9@gmail.com",
+      "username": "naveenkeshav9@gmail.com",
+      "password": "Nave@0596",
+      "firstName": "Naveen",
+      "lastName": "kesav",
+      "profilePhoto": "NK"
+    },
+    {
+      "id": "60be",
+      "email": "naveenkeshav9@gmail.com",
+      "username": "naveenoo9",
+      "password": "Nave@0596",
+      "firstName": "Naveen",
+      "lastName": "",
+      "profilePhoto": "N"
+    }
+  ]
+}

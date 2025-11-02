@@ -1,152 +1,123 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
-import { useWindowWidth } from '../../hooks/useWindowWidth';
+import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import { ThemeToggle } from './ThemeToggle';
+import { RootState } from '../../app/store';
+import { Avatar } from '../ui/Avatar';
+import { setLoggedOutUser } from '../../slice/userSlice';
 
 export const Header: React.FC = () => {
-  const [isMenuOpen, setMenuOpen] = useState(false);
-  const width = useWindowWidth();
-  const location = useLocation();
+  const user = useSelector((state: RootState) => state.user.userdata);
+  const dispatch = useDispatch();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const toggleMenu = () => setMenuOpen(!isMenuOpen);
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
-  const showInlineNav = width <= 900 && width > 650;
-  const showMobileMenu = width <= 650;
+  const handleLogout = () => {
+    dispatch(setLoggedOutUser());
+    localStorage.removeItem('user');
+  };
 
   return (
     <HeaderContainer>
       <Logo to='/'>Smart Trackr</Logo>
-
-      {/* Inline nav for tablet */}
-      {showInlineNav && (
-        <NavLinks>
-          <NavItem to='/' $active={location.pathname === '/'}>
-            Home
-          </NavItem>
-          <NavItem to='/about' $active={location.pathname === '/about'}>
-            About
-          </NavItem>
-          <NavItem to='/settings' $active={location.pathname === '/settings'}>
-            Settings
-          </NavItem>
-        </NavLinks>
-      )}
-
-      <RightSection>
-        <ThemeToggle />
-        {/* Hamburger for mobile */}
-        {showMobileMenu && (
-          <MenuButton onClick={toggleMenu}>
-            {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
-          </MenuButton>
-        )}
-      </RightSection>
-
-      {/* Mobile Drawer */}
-      {showMobileMenu && (
-        <>
-          <Overlay $open={isMenuOpen} onClick={toggleMenu} />
-          <MobileDrawer $open={isMenuOpen}>
-            <NavItem
-              to='/'
-              $active={location.pathname === '/'}
-              onClick={toggleMenu}>
-              Home
-            </NavItem>
-            <NavItem
-              to='/about'
-              $active={location.pathname === '/about'}
-              onClick={toggleMenu}>
-              About
-            </NavItem>
-            <NavItem
-              to='/settings'
-              $active={location.pathname === '/settings'}
-              onClick={toggleMenu}>
-              Settings
-            </NavItem>
-          </MobileDrawer>
-        </>
+      {user && (
+        <AvatarContainer ref={dropdownRef}>
+          <Avatar
+            photo={user.profilePhoto}
+            size={40}
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+          />
+          {dropdownOpen && (
+            <Dropdown isMobile={window.innerWidth <= 650} open={dropdownOpen}>
+              <DropdownItem>
+                <ThemeToggle />
+              </DropdownItem>
+              <DropdownItem>
+                <strong>{user.username || user.email}</strong>
+                <br />
+                <small>{user.email}</small>
+              </DropdownItem>
+              <DropdownItem onClick={handleLogout}>Logout</DropdownItem>
+            </Dropdown>
+          )}
+        </AvatarContainer>
       )}
     </HeaderContainer>
   );
 };
 
-/* ===================== STYLES ===================== */
-
-const HeaderContainer = styled.header`
+const HeaderContainer = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0 1.5rem;
+  height: 5rem;
   background-color: ${({ theme }) => theme.primary};
   color: #fff;
-  height: 5rem;
-  width: 100%;
-  padding: 0 2rem;
   position: relative;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
 `;
 
 const Logo = styled(Link)`
   color: #fff;
-  font-weight: 700;
-  font-size: 2.4rem;
-  text-decoration: none;
+  font-weight: 600;
+  font-size: 2.5rem;
 `;
 
-const NavLinks = styled.nav`
-  display: flex;
-  gap: 2rem;
+const AvatarContainer = styled.div`
+  position: relative;
 `;
 
-const NavItem = styled(Link)<{ $active?: boolean }>`
-  color: ${({ $active }) => ($active ? '#ffea00' : '#fff')};
-  font-size: 1.4rem;
-  text-decoration: none;
-  transition: color 0.2s ease;
-  &:hover {
-    color: #ffea00;
-  }
-`;
-
-const RightSection = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-`;
-
-const MenuButton = styled.button`
-  display: none;
-  background: none;
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  @media (max-width: 650px) {
-    display: block;
-  }
-`;
-
-const MobileDrawer = styled.div<{ $open: boolean }>`
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  top: 0;
-  right: ${({ $open }) => ($open ? '0' : '-100%')};
-  width: 60%;
-  height: 100vh;
-  background-color: ${({ theme }) => theme.primary};
-  padding: 5rem 2rem;
-  transition: right 0.3s ease;
-  z-index: 1001;
-`;
-
-const Overlay = styled.div<{ $open: boolean }>`
-  display: ${({ $open }) => ($open ? 'block' : 'none')};
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.3);
+const Dropdown = styled.div<{ isMobile?: boolean; open?: boolean }>`
+  position: absolute;
+  right: 0;
+  top: 50px;
+  background-color: ${({ theme }) =>
+    theme.dropdownBackground || theme.background};
+  color: ${({ theme }) => theme.dropdownText || theme.text};
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  min-width: 180px;
+  padding: 0.5rem 0;
   z-index: 1000;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+
+  @media (max-width: 650px) {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 250px;
+    transform: ${({ open }) => (open ? 'translateX(0)' : 'translateX(100%)')};
+    opacity: ${({ open }) => (open ? 1 : 0)};
+    border-radius: 0;
+    padding-top: 5rem;
+  }
+`;
+
+const DropdownItem = styled.div`
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.dropdownHover || '#eee'};
+  }
+
+  small {
+    color: ${({ theme }) => theme.dropdownSmallText || '#888'};
+  }
 `;
