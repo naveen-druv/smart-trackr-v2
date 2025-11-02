@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { toggleTheme } from '../../features/themes/themeSlice';
+import { toggleTheme } from '../../slice/theme/themeSlice';
 
 const ToggleButton = styled.button`
   background: none;

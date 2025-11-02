@@ -5,7 +5,7 @@ import { RootLayout } from '../components/layout/RootLayout';
 import { NotFound } from '../pages/NotFound';
 import Home from '../pages/Home';
 import { useAppSelector } from '../app/hooks';
-import { selectUser } from '../slice/userSlice';
+import { selectUser } from '../slice/user/userSlice';
 
 export const AppRouter = () => {
   const user = useAppSelector(selectUser);

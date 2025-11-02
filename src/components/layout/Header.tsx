@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { ThemeToggle } from './ThemeToggle';
 import { RootState } from '../../app/store';
 import { Avatar } from '../ui/Avatar';
-import { setLoggedOutUser } from '../../slice/userSlice';
+import { setLoggedOutUser } from '../../slice/user/userSlice';
 
 export const Header: React.FC = () => {
   const user = useSelector((state: RootState) => state.user.userdata);

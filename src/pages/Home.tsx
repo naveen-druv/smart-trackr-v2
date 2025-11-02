@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { Button } from '../components/ui/Button';
-import { toggleTheme } from '../features/themes/themeSlice';
-import { selectUser } from '../slice/userSlice';
+import { toggleTheme } from '../slice/theme/themeSlice';
+import { selectUser } from '../slice/user/userSlice';
 
 const Wrapper = styled.div`
   text-align: center;

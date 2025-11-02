@@ -1,4 +1,4 @@
-import { Theme } from '../features/themes/theme';
+import { Theme } from '../constants/theme';
 
 declare module 'styled-components' {
   export interface DefaultTheme extends Theme {}

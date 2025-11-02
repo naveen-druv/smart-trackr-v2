@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../app/hooks';
-import { setLoggedInUser } from '../../slice/userSlice';
+import { setLoggedInUser } from '../../slice/user/userSlice';
 
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState('');
