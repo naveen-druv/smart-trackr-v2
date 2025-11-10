@@ -6,37 +6,71 @@ import { useAppDispatch } from '../../app/hooks';
 import { setLoggedInUser } from '../../slice/user/userSlice';
 import { GoogleFormInput } from '../ui/input/GoogleFormInput';
 import { Button } from '../ui/buttons/Button';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { firebaseAuth } from '../../firebase';
 
-const SignIn: React.FC = () => {
+const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
   const [error, setError] = useState('');
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await axios.get(
-        `http://localhost:3001/users?email=${email}&password=${password}`
+      const response = await signInWithEmailAndPassword(
+        firebaseAuth,
+        email,
+        password
       );
-      console.info('res: ', res);
-      if (res.data.length) {
-        const userResponse = res.data[0];
+
+      console.info('SignIn/response: ', response);
+      const userData: {
+        email: string;
+        displayName: string;
+        phoneNumber: string;
+        photoUrl: string;
+      } = {
+        email: response?.user?.email ?? '',
+        displayName: response?.user?.displayName ?? '',
+        phoneNumber: response?.user?.phoneNumber ?? '',
+        photoUrl: response?.user?.photoURL ?? '',
+      };
+      console.info('SignIn/userData: ', userData);
+      if (!error && email === userData.email) {
         dispatch(
           setLoggedInUser({
-            email: userResponse.email,
-            username: userResponse.email,
-            firstName: userResponse.firstName,
-            profilePhoto: userResponse.profilePhoto,
+            email: userData.email,
+            username: userData.email,
+            firstName: userData.email,
+            profilePhoto: userData.photoUrl,
           })
         );
         navigate('/');
-      } else {
-        setError('Invalid credentials');
       }
-    } catch (err) {
-      setError('Server error');
+      // if(response?.user)
+      // const res = await axios.get(
+      //   `http://localhost:3001/users?email=${email}&password=${password}`
+      // );
+      // console.info('res: ', res);
+      // if (res.data.length) {
+      //   const userResponse = res.data[0];
+      //   dispatch(
+      //     setLoggedInUser({
+      //       email: userResponse.email,
+      //       username: userResponse.email,
+      //       firstName: userResponse.firstName,
+      //       profilePhoto: userResponse.profilePhoto,
+      //     })
+      //   );
+      //   navigate('/');
+      // } else {
+      //   setError('Invalid credentials');
+      // }
+    } catch (error: any) {
+      console.error('SignIn/catch/error: ', error);
+      setError(error?.message);
     }
   };
 

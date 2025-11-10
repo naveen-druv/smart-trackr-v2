@@ -3,9 +3,9 @@ import styled from 'styled-components';
 
 interface ButtonProps {
   purpose: 'primary' | 'secondary';
-  type: string;
+  type?: string;
   value: string;
-  onClick: (e: React.FormEvent) => Promise<void>;
+  onClick?: (e: React.FormEvent) => Promise<void>;
 }
 export const Button: React.FC<ButtonProps> = ({ purpose, value, onClick }) => {
   return (

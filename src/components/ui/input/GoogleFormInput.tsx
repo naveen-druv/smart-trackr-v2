@@ -20,7 +20,8 @@ export const GoogleFormInput: React.FC<GoogleFormInputProps> = ({
 }) => {
   const [focused, setFocused] = useState(false);
   const id = useId();
-
+  const isDate = type === 'date';
+  const isActive = !!value || focused || isDate;
   return (
     <Container>
       <Input
@@ -68,6 +69,14 @@ const Input = styled.input`
   background: transparent;
   font-size: 1.6rem;
   color: #202124;
+  &::placeholder {
+    color: transparent;
+  }
+
+  &[type='date']::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(40%);
+  }
 `;
 
 const Label = styled.label<{ active: boolean }>`
