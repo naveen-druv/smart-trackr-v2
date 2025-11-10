@@ -6,6 +6,7 @@ import { NotFound } from '../pages/NotFound';
 import Home from '../pages/Home';
 import { useAppSelector } from '../app/hooks';
 import { selectUser } from '../slice/user/userSlice';
+import { Header } from '../components/layout/Header';
 
 export const AppRouter = () => {
   const user = useAppSelector(selectUser);

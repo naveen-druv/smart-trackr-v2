@@ -2,17 +2,20 @@ import React from 'react';
 import styled from 'styled-components';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
+import { useAppSelector } from '../../app/hooks';
+import { selectUser } from '../../slice/user/userSlice';
 
 interface RootLayoutProps {
   children?: React.ReactNode;
 }
 
 export const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
+  const user = useAppSelector(selectUser);
   return (
     <GridContainer>
       <Header />
       <MainContent>
-        <Sidebar />
+        {user && <Sidebar />}
         <Content>{children}</Content>
       </MainContent>
     </GridContainer>

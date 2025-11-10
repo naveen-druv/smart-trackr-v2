@@ -4,6 +4,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../app/hooks';
 import { setLoggedInUser } from '../../slice/user/userSlice';
+import { GoogleFormInput } from '../ui/input/GoogleFormInput';
+import { Button } from '../ui/buttons/Button';
 
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -39,51 +41,47 @@ const SignIn: React.FC = () => {
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <h2>Sign In</h2>
-      {error && <Error>{error}</Error>}
-      <Input
-        type='email'
-        placeholder='Email'
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-      />
-      <Input
-        type='password'
-        placeholder='Password'
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
-      <Button type='submit'>Sign In</Button>
-    </Form>
+    <FormContainer>
+      <Form onSubmit={handleSubmit}>
+        {error && <Error>{error}</Error>}
+        <GoogleFormInput
+          type='email'
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          label='Email'
+        />
+        <GoogleFormInput
+          type='password'
+          label='Password'
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <Button
+          type='submit'
+          purpose='primary'
+          value='Sign In'
+          onClick={handleSubmit}
+        />
+      </Form>
+    </FormContainer>
   );
 };
 
 /* ===================== STYLES ===================== */
+const FormContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  border: 1px solid black;
+`;
 const Form = styled.form`
+  height: 100%;
   display: flex;
   flex-direction: column;
-`;
-
-const Input = styled.input`
-  padding: 0.8rem 1rem;
-  margin: 0.8rem 0;
-  border-radius: 6px;
-  border: none;
-  font-size: 1.2rem;
-`;
-
-const Button = styled.button`
-  padding: 0.8rem 1rem;
-  margin-top: 1rem;
-  background-color: #ffea00;
-  color: #000;
-  font-weight: 600;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+  padding: 0.5rem;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Error = styled.div`
